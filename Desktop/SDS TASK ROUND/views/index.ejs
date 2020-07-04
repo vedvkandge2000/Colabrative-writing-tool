@@ -1,0 +1,22 @@
+<html>
+<title>Realtime Editor/Collaboration</title>
+
+<body>
+    <h3>Realtime Editor/Collaboration</h3>
+    <form id="message-form" action="/edit" method="POST">
+    <div>
+        <textarea rows="30" cols="100" name="post" id="editor" style="background-color:rgb(34, 29, 29);color:white;padding:10px" placeholder="Type Your Text..."><%= previouscontent %></textarea>
+    </div>
+    <input type="hidden" name="id" id="post-id" value="<%= postId %>">
+    <button type="submit" id="submit-btn" class="btn btn-primary" name="button">Send</button>
+    </form>
+    <!-- <form action="/edit" method="POST">
+        <input type="hidden" name="id" id="post-id" value="<%= postId %>">
+        <button type="submit" class="btn btn-primary" name="buttom">Publish</button>
+    </form> -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/client.js"></script>
+</body>
+
+</html>

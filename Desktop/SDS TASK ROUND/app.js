@@ -45,12 +45,28 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio();
+const io = socketio(server);
 
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+io.on('connection', (socket) => {
+  console.log('New WebSocket connection')
+
+
+    // socket.emit('message', 'Welcome!')
+    socket.on('message', (message,id) => {
+             console.log(message)
+             socket.broadcast.emit('message', message)
+         })
+
+    socket.on('sendMessage', (message) => {
+        io.emit('message', message)
+    })
+})
+
 
 app.use(session({
   secret: 'our little secret.',
@@ -67,6 +83,8 @@ mongoose.connect("mongodb://localhost:27017/SDSTaskDB", {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 });
+
+
 mongoose.set("useCreateIndex", true);
 
 
@@ -191,27 +209,7 @@ app.get("/register",function(req,res) {
 });
 
 
-// app.get("/home",function(req,res) {
 
-//   if(req.isAuthenticated()){
-//     Post.find(function(err, foundPost) {
-//         if(err){
-//           console.log(err);
-//         }else{
-//           res.render("home",
-//           {
-//             posts:foundPost,
-//             userId: req.user.id,
-//             email: req.user.username,
-//           });
-//         }
-//     })
-//   }else {
-//     res.redirect("/login");
-//   }
-
-
-// });
 
 app.get("/logout",function(req,res) {
   req.logout();
@@ -224,10 +222,6 @@ app.get("/posts/:postId", function(req,res) {
   const pageName = req.body.button;
 
   Post.findOne({_id: requestedId}, function(err, foundPost){
-      // if (err) {
-      //   console.log(err);
-      // }else {
-        //console.log(foundPost);
         if(pageName === "home"){
           res.render("allPosts",{
             titleContent:foundPost.title,
@@ -235,8 +229,6 @@ app.get("/posts/:postId", function(req,res) {
             postId:requestedId,
             postDate:foundPost.updatedAt,
             creatorId:foundPost.creator,
-            //img:foundPost.imgUrl,
-            //comments:foundPost.comments,
             postedBy: foundPost.creatorName
           });
         }
@@ -247,8 +239,6 @@ app.get("/posts/:postId", function(req,res) {
             postId:requestedId,
             postDate:foundPost.updatedAt,
             creatorId:foundPost.creator,
-            //img:foundPost.imgUrl,
-            //comments:foundPost.comments,
             postedBy: foundPost.creatorName
           });
         }
@@ -259,12 +249,9 @@ app.get("/posts/:postId", function(req,res) {
             postId:requestedId,
             postDate:foundPost.updatedAt,
             creatorId:foundPost.creator,
-            //img:foundPost.imgUrl,
-            //comments:foundPost.comments,
             postedBy: foundPost.creatorName
           });
         }
-      //}
    });
 });
 
@@ -385,30 +372,8 @@ app.post("/posts/:postId",function(req,res) {
   const requestedId = req.params.postId;
   const pageName = req.body.button;
 
-
-  // console.log(pageName);
-  // User.findOne({_id: req.user.id}, function(err,foundUser) {
-  //   console.log(foundUser.posts);
-  //   const foundPost = foundUser.posts.filter(post => {
-  //     post._id == requestedId;
-  //   });
-  //   typeof(requestedId);
-  //   console.log(requestedId);
-  //   console.log(foundPost);
-  //   if (err) {
-  //     console.log(err);
-  //   }else {
-  //     res.render("post",{titleContent:foundPost[0].title, bodyContent:foundPost[0].content, postId:requestedId, img:foundPost[0].imgUrl});
-  //   }
-  //
-  //
-  // })
-
   Post.findOne({_id: requestedId}, function(err, foundPost){
-      // if (err) {
-      //   console.log(err);
-      // }else {
-        //console.log(foundPost);
+
         if(pageName === "home"){
           res.render("allPosts",{
             titleContent:foundPost.title,
@@ -416,8 +381,6 @@ app.post("/posts/:postId",function(req,res) {
             postId:requestedId,
             postDate:foundPost.updatedAt,
             creatorId:foundPost.creator,
-            //img:foundPost.imgUrl,
-            //comments:foundPost.comments,
             postedBy: foundPost.creatorName
           });
         }
@@ -428,12 +391,9 @@ app.post("/posts/:postId",function(req,res) {
             postId:requestedId,
             postDate:foundPost.updatedAt,
             creatorId:foundPost.creator,
-            //img:foundPost.imgUrl,
-            //comments:foundPost.comments,
             postedBy: foundPost.creatorName
           });
         }
-      //}
    });
 });
 
@@ -450,9 +410,6 @@ app.get("/myBlogs/:userId",function(req,res) {
     }
   }
 });
-//   User.findOne({_id: requestedUserId}, function(err, found) {
-//
-// });
 });
 
 app.post("/register", function(req,res) {
@@ -526,23 +483,16 @@ app.post("/post",function(req,res) {
         if (err) {
           console.log(err);
         }else {
-
-          res.render("Edit",{previousTitle:foundUser.title, previouscontent:foundUser.content, postId:foundUser._id/*,previousUrl:foundUser.imgUrl*/});
+          res.render("index",{previousTitle:foundUser.title, previouscontent:foundUser.content, postId:foundUser._id/*,previousUrl:foundUser.imgUrl*/});
         }
      });
     }
   else if (action === "delete") {
-
-    // User.findOneAndUpdate({_id:req.user.id}, {$pull: {posts: {_id: req.body.id}}}, function(err, foundUser) {
-      // if(!err){
         Post.findOneAndDelete({_id: req.body.id}, function(err) {
           if(!err){
             res.redirect("/myBlogs/"+req.user.id);
           }
         });
-      // }
-    // });
-
     }
     else if(action === 'share'){
       User.find(function(err, found) {
@@ -556,50 +506,21 @@ app.post("/post",function(req,res) {
 
 
 app.post("/edit",function(req,res) {
+  console.log(req.body.id);
+  console.log(req.body.post);
+  
+  
 
   Post.findOneAndUpdate({_id:req.body.id}, {$set: {title:req.body.title,/*imgUrl:req.body.img,*/content:req.body.post,}}, function(err) {
     if(err){
       res.send(err);
     }else{
+      
+  
       res.redirect("/myBlogs/"+req.user.id);
     }
   })
 
-
-  // User.findOneAndUpdate({_id:req.user.id}, {$pull: {posts: {_id: req.body.id}}},function(err) {
-  //   if(err){
-  //     res.send(err);
-  //   }else{
-  //
-  //         const updatedPost = new Post({
-  //           title:req.body.title,
-  //           imgUrl:req.body.img,
-  //           content:req.body.post,
-  //           creator: req.user.id
-  //
-  //         });
-  //         User.findOne({_id: req.user.id}, function(err, found) {
-  //             found.posts.push(updatedPost);
-  //             found.save(function(err) {
-  //               if(!err){
-  //                 // console.log(req.user.id);
-  //                 Post.findOneAndDelete({_id:req.body.id}, function(err) {
-  //                   if(!err){
-  //                     updatedPost.save(function(err) {
-  //                       if(err){
-  //                         console.log(err);
-  //                       }else {
-  //                         res.redirect("/myBlogs/"+req.user.id);
-  //                       }
-  //                     })
-  //                   }
-  //                 })
-  //
-  //               }
-  //             });
-  //           });
-  //   }
-  // });
 });
 
 app.post("/share", function(req,res) {
@@ -632,20 +553,7 @@ app.post("/comment",function(req,res) {
     })
   });
 
-  // User.findOne({_id: req.body.userId}, function(err,foundUser) {
-  //   console.log(foundUser.posts);
-  // const founded = foundUser.posts.filter(function(post) {
-  //   return(post._id === req.body.postId);
-  // })
-  // });
-  // console.log(founded);
-  // founded[0].comments.push(newComment);
-  // founded[0].save(function(err) {
-  //   if(!err){
-  //     res.redirect("/posts/"+req.body.userId+"/"+req.body.postId);
-  //   }
-  // })
-
+  
 
 })
 
@@ -653,21 +561,11 @@ app.post("/compose",function(req,res) {
 
   const newPost = new Post({
     title:req.body.title,
-    //imgUrl:req.body.img,
     content:req.body.post,
     creator: req.user.id,
     creatorName: req.user.username,
     contributor: req.user.id
   });
-
-  // User.findOne({_id: req.user.id}, function(err, found) {
-  //     found.posts.push(newPost);
-  //     found.save(function(err) {
-  //       if(!err){
-  //         // console.log(req.user.id);
-  //       }
-  //     });
-  //   })
     newPost.save(function(err) {
       if(err){
         console.log(err);
@@ -676,6 +574,9 @@ app.post("/compose",function(req,res) {
       }
     })
 })
+
+
+
 
 let port = process.env.PORT;
 if (port == null || port == "") {
@@ -687,3 +588,14 @@ if (port == null || port == "") {
 server.listen(port, function() {
   console.log("Server started on port!");
 });
+
+// io.on('connection', (socket) => {
+//   console.log('connected')
+//   socket.on('message', (evt) => {
+//       console.log(evt)
+//       socket.broadcast.emit('message', evt)
+//   })
+// })
+
+
+
