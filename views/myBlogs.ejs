@@ -1,0 +1,24 @@
+<%- include('partials/header_with_logout'); -%>
+  <div class="row justify-content-cente" style="padding: 10px;">
+  <div class="col-md-8" >
+<% posts.forEach(function(post) { %>
+  <div class="card mb-4">
+          
+          <div class="card-body">
+            <p class="card-text"><%= post.content.substring(0,200) + " ..." %></p>
+            <form  action="/posts/<%= post._id %>" method="post">
+              <button class="btn btn-primary" type="submit" name="button" value="myBlogs">Read More</button>
+            </form>
+          </div>
+          <div class="card-footer text-muted">
+            <%= post.updatedAt %><br>
+            Posted By:<a href="#"><%= post.creatorName %></a>
+          </div>
+        </div>
+<% }) %>
+</div>
+<form action="/new" method="post">
+    <button name="button" class="btn btn-primary" value="new">Create new Blog</button>
+</form>
+</div>
+<%- include('partials/footer'); -%>
