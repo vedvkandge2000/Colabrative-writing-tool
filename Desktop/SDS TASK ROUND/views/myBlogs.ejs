@@ -1,22 +1,14 @@
 <%- include('partials/header_with_logout'); -%>
-
-
-
-
   <div class="row justify-content-cente" style="padding: 10px;">
   <div class="col-md-8" >
 <% posts.forEach(function(post) { %>
   <div class="card mb-4">
-          <!-- <img class="card-img-top" src=<%= post.imgUrl %> alt="Post_Img"> -->
+          
           <div class="card-body">
-
-            <h2 class="card-title"><%= post.title %></h2>
             <p class="card-text"><%= post.content.substring(0,200) + " ..." %></p>
             <form  action="/posts/<%= post._id %>" method="post">
               <button class="btn btn-primary" type="submit" name="button" value="myBlogs">Read More</button>
             </form>
-            <!-- <a href="/posts/<%= post._id %>" class="btn btn-primary">Read More</a>
-            <input type="hidden" name="pageName" value="myBlogs"> -->
           </div>
           <div class="card-footer text-muted">
             <%= post.updatedAt %><br>
@@ -24,19 +16,9 @@
           </div>
         </div>
 <% }) %>
-
 </div>
 <form action="/new" method="post">
     <button name="button" class="btn btn-primary" value="new">Create new Blog</button>
 </form>
-
-
-
-
 </div>
-
-
-
-
-
 <%- include('partials/footer'); -%>

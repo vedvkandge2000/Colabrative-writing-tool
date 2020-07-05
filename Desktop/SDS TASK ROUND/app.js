@@ -57,11 +57,11 @@ io.on('connection', (socket) => {
 
 
     // socket.emit('message', 'Welcome!')
-    socket.on('message', (message,id) => {
+    socket.on('message', (message) => {
              console.log(message)
              socket.broadcast.emit('message', message)
          })
-
+    
     socket.on('sendMessage', (message) => {
         io.emit('message', message)
     })
@@ -89,10 +89,6 @@ mongoose.set("useCreateIndex", true);
 
 
 const postSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    createIndexes: true
-  },
   content: {
     type: String,
     createIndexes: true
@@ -222,19 +218,9 @@ app.get("/posts/:postId", function(req,res) {
   const pageName = req.body.button;
 
   Post.findOne({_id: requestedId}, function(err, foundPost){
-        if(pageName === "home"){
-          res.render("allPosts",{
-            titleContent:foundPost.title,
-            bodyContent:foundPost.content,
-            postId:requestedId,
-            postDate:foundPost.updatedAt,
-            creatorId:foundPost.creator,
-            postedBy: foundPost.creatorName
-          });
-        }
-        else if(pageName === "myBlogs"){
+        
+        if(pageName === "myBlogs"){
           res.render("post",{
-            titleContent:foundPost.title,
             bodyContent:foundPost.content,
             postId:requestedId,
             postDate:foundPost.updatedAt,
@@ -244,7 +230,6 @@ app.get("/posts/:postId", function(req,res) {
         }
         else{
           res.render("Post",{
-            titleContent:foundPost.title,
             bodyContent:foundPost.content,
             postId:requestedId,
             postDate:foundPost.updatedAt,
@@ -374,19 +359,9 @@ app.post("/posts/:postId",function(req,res) {
 
   Post.findOne({_id: requestedId}, function(err, foundPost){
 
-        if(pageName === "home"){
-          res.render("allPosts",{
-            titleContent:foundPost.title,
-            bodyContent:foundPost.content,
-            postId:requestedId,
-            postDate:foundPost.updatedAt,
-            creatorId:foundPost.creator,
-            postedBy: foundPost.creatorName
-          });
-        }
-        else if(pageName === "myBlogs"){
+        
+        if(pageName === "myBlogs"){
           res.render("post",{
-            titleContent:foundPost.title,
             bodyContent:foundPost.content,
             postId:requestedId,
             postDate:foundPost.updatedAt,
@@ -483,7 +458,7 @@ app.post("/post",function(req,res) {
         if (err) {
           console.log(err);
         }else {
-          res.render("index",{previousTitle:foundUser.title, previouscontent:foundUser.content, postId:foundUser._id/*,previousUrl:foundUser.imgUrl*/});
+          res.render("index",{ previouscontent:foundUser.content, postId:foundUser._id});
         }
      });
     }
@@ -511,12 +486,10 @@ app.post("/edit",function(req,res) {
   
   
 
-  Post.findOneAndUpdate({_id:req.body.id}, {$set: {title:req.body.title,/*imgUrl:req.body.img,*/content:req.body.post,}}, function(err) {
+  Post.findOneAndUpdate({_id:req.body.id}, {$set: {content:req.body.post}}, function(err) {
     if(err){
       res.send(err);
     }else{
-      
-  
       res.redirect("/myBlogs/"+req.user.id);
     }
   })
@@ -540,27 +513,10 @@ app.post("/share", function(req,res) {
   })
 })
 
-app.post("/comment",function(req,res) {
-  const newComment = new Comment({
-    name: req.user.username,
-    content: req.body.comment
-  });
-
-  Post.findOne({_id: req.body.postId}, function(err,found) {
-    found.comments.push(newComment);
-    found.save(function(err) {
-      res.redirect("/posts/"+req.body.postId);
-    })
-  });
-
-  
-
-})
 
 app.post("/compose",function(req,res) {
 
   const newPost = new Post({
-    title:req.body.title,
     content:req.body.post,
     creator: req.user.id,
     creatorName: req.user.username,
@@ -589,13 +545,6 @@ server.listen(port, function() {
   console.log("Server started on port!");
 });
 
-// io.on('connection', (socket) => {
-//   console.log('connected')
-//   socket.on('message', (evt) => {
-//       console.log(evt)
-//       socket.broadcast.emit('message', evt)
-//   })
-// })
 
 
 

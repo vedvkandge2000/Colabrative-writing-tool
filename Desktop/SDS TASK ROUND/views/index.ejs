@@ -1,22 +1,56 @@
 <html>
-<title>Realtime Editor/Collaboration</title>
+<title>Collaborative Writing Tool</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/286b29f754.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/bootstrap-social.css">
+  <link rel="stylesheet" href="/css/styles.css">
 
-<body>
-    <h3>Realtime Editor/Collaboration</h3>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">SDS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="nav justify-content-end">
+    <li class="nav-item">
+      <a class="nav-link active" href="/myblog">HOME</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/about">ABOUT</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="contact">CONTACT</a>
+    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" href="/myBlog">MY BLOGS</a>
+    </li> -->
+     <li><a class="btn btn-outline-primary" href="/logout">logout</a></li> 
+    </ul>
+  
+  </div>
+  </nav>
+<body >
+    <div class="container">
+    <h3>Edit</h3>
     <form id="message-form" action="/edit" method="POST">
-    <div>
-        <textarea rows="30" cols="100" name="post" id="editor" style="background-color:rgb(34, 29, 29);color:white;padding:10px" placeholder="Type Your Text..."><%= previouscontent %></textarea>
+    <div class="form-group">
+        <label for="forPost">Post</label>
+        <textarea  class="form-control" rows="10" cols="30" name="post" id="editor"  placeholder="Type Your Text..."><%= previouscontent %></textarea>
     </div>
     <input type="hidden" name="id" id="post-id" value="<%= postId %>">
-    <button type="submit" id="submit-btn" class="btn btn-primary" name="button">Send</button>
+    <button style="padding: 10px;" type="submit" id="submit-btn" class="btn btn-primary" name="button">Save</button>
     </form>
-    <!-- <form action="/edit" method="POST">
-        <input type="hidden" name="id" id="post-id" value="<%= postId %>">
-        <button type="submit" class="btn btn-primary" name="buttom">Publish</button>
-    </form> -->
+</div>
+    <div class="footer-padding"></div>
+  <div class="footer">
+    <p>&copy; Copyright 2020 SDS Task</p>
+  </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/client.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 
 </html>
