@@ -1,0 +1,61 @@
+<%- include('partials/header_with_logout'); -%>
+
+
+
+  <div class="row justify-content-center">
+
+      <!-- Post Content Column -->
+      <div class="col-lg-8">
+
+       
+        
+        <!-- Author -->
+        <p class="lead">
+          by
+          <a href="#"><%= postedBy %></a>
+        </p>
+
+        <hr>
+
+        <!-- Date/Time -->
+        <p><%= postDate %></p>
+
+        <hr>
+        <hr>
+
+        <!-- Post Content -->
+        <p class="lead"><%= bodyContent %></p>
+
+        <hr>
+
+        <form action="/post" method="post">
+            <input type="hidden" name="id" value="<%= postId %>">
+            <button name="button" class="btn btn-primary" value="edit">Edit</button>
+            <button name="button" class="btn btn-primary" value="delete">Delete</button>
+            <button name="button" class="btn btn-primary" value="share">share</button>
+            <input type="hidden" name="postId" value="<%= postId %>">
+
+        </form>
+        <hr>
+      </div>
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Share Widget -->
+        <div class="card my-4 card-2">
+          <div class="top-2">
+            <h5 class="name" >Share</h5>
+          </div>
+          <div class="card-body">
+            <a href="www.linkdin.com"><i class="fab fa-linkedin fa-2x icon"></i></a>
+            <a href="www.gmail.com"> <i class="fas fa-envelope fa-2x icon"></i></a>
+            <a href="www.whatsapp.com"><i class="fab fa-whatsapp fa-2x icon"></i></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.row -->
+
+
+<%- include('partials/footer'); -%>
