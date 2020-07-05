@@ -17,15 +17,6 @@ router.get("/forgot",function(req,res) {
     res.render("forgot")
   });
 
-//  app.get("/auth/google",
-//  passport.authenticate("google", { scope: ["profile", "email"] }));
-
-  // app.get("/auth/google/Blogging",
-  //   passport.authenticate("google", { failureRedirect: "/login" }),
-  //   function(req, res) {
-  //     // Successful authentication, redirect Home page.
-  //     res.redirect("/home");
-  // });
 
   router.get("/login",function(req,res) {
     res.render("login")
@@ -95,9 +86,9 @@ router.get("/forgot",function(req,res) {
 
   router.get("/myBlogs/:userId",function(req,res) {
     const requestedUserId = req.params.userId;
-    // console.log(requestedUserId);
+    
     db.Post.find({contributor:requestedUserId},function(err,foundPosts) {
-      // console.log(foundPosts);
+      
       if(err){
       console.log(err);
     }else {
